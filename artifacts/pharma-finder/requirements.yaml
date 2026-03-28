@@ -1,0 +1,16 @@
+packages:
+  "framer-motion": "For premium page transitions, smooth enter animations, and micro-interactions"
+  "clsx": "For conditional class merging in reusable components"
+  "tailwind-merge": "For resolving Tailwind class conflicts in custom components"
+
+images:
+  - path: "artifacts/pharma-finder/public/images/hero-medical.png"
+    description: "Abstract modern medical background with soft teal and green gradients, clean and professional, subtle geometric shapes, bright and airy"
+    aspect_ratio: "16:9"
+  - path: "artifacts/pharma-finder/public/images/about-medical.png"
+    description: "Modern hospital or clinic interior, bright, clean, soft daylight, professional healthcare setting, blurred background"
+    aspect_ratio: "16:9"
+
+notes:
+  - "Using @workspace/api-client-react for TanStack Query hooks as per monorepo structure."
+  - "Assuming shadcn/ui components exist but relying primarily on custom Tailwind for the highly polished, specific design requested."

@@ -1,22 +1,26 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Algeria Pharmacy & Doctor Finder API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: pharmacies
+    description: Pharmacy operations
+  - name: doctors
+    description: Doctor operations
+  - name: wilayas
+    description: Wilaya operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +28,159 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /wilayas:
+    get:
+      operationId: listWilayas
+      tags: [wilayas]
+      summary: List all Algerian wilayas
+      responses:
+        "200":
+          description: List of wilayas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Wilaya"
+
+  /pharmacies:
+    get:
+      operationId: listPharmacies
+      tags: [pharmacies]
+      summary: List pharmacies with optional filters
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: integer
+        - name: on_duty
+          in: query
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Paginated list of pharmacies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PharmacyListResponse"
+
+  /pharmacies/{id}:
+    get:
+      operationId: getPharmacy
+      tags: [pharmacies]
+      summary: Get pharmacy by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Pharmacy details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pharmacy"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /doctors:
+    get:
+      operationId: listDoctors
+      tags: [doctors]
+      summary: List doctors with optional filters
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: integer
+        - name: specialty
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Paginated list of doctors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DoctorListResponse"
+
+  /doctors/{id}:
+    get:
+      operationId: getDoctor
+      tags: [doctors]
+      summary: Get doctor by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Doctor details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Doctor"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /specialties:
+    get:
+      operationId: listSpecialties
+      tags: [doctors]
+      summary: List all available doctor specialties
+      responses:
+        "200":
+          description: List of specialties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +191,201 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Wilaya:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        name_ar:
+          type: string
+        region:
+          type: string
+        pharmacy_count:
+          type: integer
+        doctor_count:
+          type: integer
+      required:
+        - id
+        - code
+        - name
+        - name_ar
+        - region
+
+    Pharmacy:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        name_ar:
+          type: string
+        address:
+          type: string
+        commune:
+          type: string
+        wilaya_id:
+          type: integer
+        wilaya_name:
+          type: string
+        phone:
+          type: string
+        phone2:
+          type: string
+        email:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        hours_open:
+          type: string
+        hours_close:
+          type: string
+        is_24h:
+          type: boolean
+        on_duty:
+          type: boolean
+        on_duty_until:
+          type: string
+        rating:
+          type: number
+        review_count:
+          type: integer
+        services:
+          type: array
+          items:
+            type: string
+        image_url:
+          type: string
+      required:
+        - id
+        - name
+        - address
+        - wilaya_id
+        - wilaya_name
+        - on_duty
+
+    PharmacyListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pharmacy"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        pages:
+          type: integer
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - pages
+
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        title:
+          type: string
+        specialty:
+          type: string
+        specialty_ar:
+          type: string
+        sub_specialty:
+          type: string
+        address:
+          type: string
+        commune:
+          type: string
+        wilaya_id:
+          type: integer
+        wilaya_name:
+          type: string
+        phone:
+          type: string
+        phone2:
+          type: string
+        email:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        consultation_hours:
+          type: string
+        consultation_fee:
+          type: integer
+        accepts_cnas:
+          type: boolean
+        accepts_casnos:
+          type: boolean
+        languages:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        review_count:
+          type: integer
+        experience_years:
+          type: integer
+        bio:
+          type: string
+        image_url:
+          type: string
+        available_today:
+          type: boolean
+      required:
+        - id
+        - first_name
+        - last_name
+        - specialty
+        - address
+        - wilaya_id
+        - wilaya_name
+
+    DoctorListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Doctor"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        pages:
+          type: integer
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - pages
