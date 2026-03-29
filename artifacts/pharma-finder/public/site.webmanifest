@@ -1,0 +1,21 @@
+{
+  "name": "Algeria Pharmacy & Doctor Finder",
+  "short_name": "Pharma Finder",
+  "description": "Find pharmacies, doctors, and healthcare services near you in Algeria. Locate open pharmacies, book doctor appointments, and access health services across all wilayas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16A34A",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}
